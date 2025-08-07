@@ -8,12 +8,17 @@ from app.config import settings
 
 logger = logging.getLogger(__name__)
 
-# Create engine
+# Create engine with proper Heroku URL handling
+database_url = settings.DATABASE_URL
+if database_url.startswith("postgres://"):
+    database_url = database_url.replace("postgres://", "postgresql://", 1)
+
 engine = create_engine(
-    settings.DATABASE_URL,
+    database_url,
     pool_pre_ping=True,
     pool_size=10,
-    max_overflow=20
+    max_overflow=20,
+    echo=False  # Set to True for SQL debugging
 )
 
 # Session factory

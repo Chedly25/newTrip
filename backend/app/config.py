@@ -11,7 +11,7 @@ class Settings(BaseSettings):
     ENVIRONMENT: str = "production"
     
     # Database - Handle both Heroku and local URLs
-    DATABASE_URL: str = os.getenv("DATABASE_URL", "").replace("postgres://", "postgresql://") if os.getenv("DATABASE_URL") else ""
+    DATABASE_URL: str = os.getenv("DATABASE_URL", "postgresql://localhost/finaltrip").replace("postgres://", "postgresql://") if os.getenv("DATABASE_URL") else "postgresql://localhost/finaltrip"
     
     # Redis - Handle both Heroku and local URLs
     REDIS_URL: str = os.getenv("REDIS_URL", "redis://localhost:6379/0")
