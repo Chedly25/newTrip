@@ -1,0 +1,46 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgis/postgis:15-3.3
+    environment:
+      POSTGRES_USER: wanderlog
+      POSTGRES_PASSWORD: wanderlog_pass
+      POSTGRES_DB: wanderlog_db
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./backend/migrations/init_db.sql:/docker-entrypoint-initdb.d/init.sql
+    ports:
+      - "5432:5432"
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+
+  backend:
+    build: ./backend
+    ports:
+      - "8000:8000"
+    environment:
+      DATABASE_URL: postgresql://wanderlog:wanderlog_pass@postgres:5432/wanderlog_db
+      REDIS_URL: redis://redis:6379/0
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY}
+    depends_on:
+      - postgres
+      - redis
+    volumes:
+      - ./backend:/app
+
+  celery:
+    build: ./backend
+    command: celery -A app.workers.celery_app worker --loglevel=info
+    environment:
+      DATABASE_URL: postgresql://wanderlog:wanderlog_pass@postgres:5432/wanderlog_db
+      REDIS_URL: redis://redis:6379/0
+    depends_on:
+      - postgres
+      - redis
+
+volumes:
+  postgres_data:
