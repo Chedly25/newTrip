@@ -134,7 +134,7 @@ async def advanced_travel_chat(
             conversation_id=conversation_id,
             role="user",
             content=message.message,
-            metadata={"location": message.location, "chat_type": message.chat_type}
+            message_metadata={"location": message.location, "chat_type": message.chat_type}
         )
         db.add(user_message)
         
@@ -143,7 +143,7 @@ async def advanced_travel_chat(
             conversation_id=conversation_id,
             role="assistant",
             content=ai_response["response"],
-            metadata={"confidence": ai_response.get("confidence", 0.0)}
+            message_metadata={"confidence": ai_response.get("confidence", 0.0)}
         )
         db.add(ai_message)
         
@@ -226,7 +226,7 @@ async def get_conversation_history(
                 "role": msg.role,
                 "content": msg.content,
                 "timestamp": msg.timestamp,
-                "metadata": msg.metadata
+                "metadata": msg.message_metadata
             }
             for msg in messages
         ]

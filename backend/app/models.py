@@ -138,7 +138,7 @@ class ConversationMessage(Base):
     conversation_id = Column(UUID(as_uuid=True), ForeignKey("conversations.id"))
     role = Column(String(20))  # user, assistant, system
     content = Column(Text)
-    metadata = Column(JSON)  # Additional context, function calls, etc.
+    message_metadata = Column(JSON)  # Additional context, function calls, etc.
     timestamp = Column(DateTime, default=datetime.utcnow)
     
     # Relationships
