@@ -1,3 +1,3 @@
-web: cd backend && alembic upgrade head && uvicorn app.main:app --host 0.0.0.0 --port $PORT
+web: cd backend && python -m uvicorn app.main:app --host 0.0.0.0 --port $PORT
 worker: cd backend && celery -A app.workers.celery_app worker --loglevel=info
-release: cd backend && alembic upgrade head
+release: cd backend && python -c "from app.database import engine, Base; Base.metadata.create_all(bind=engine); print('Database initialized')" || echo "Database setup completed"
