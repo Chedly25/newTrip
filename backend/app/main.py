@@ -11,8 +11,8 @@ from app.api.v1 import cities, places, itineraries, chat, auth, photos, content,
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-# Create database tables
-Base.metadata.create_all(bind=engine)
+# Database tables are managed by Alembic migrations
+# Remove Base.metadata.create_all(bind=engine) to avoid conflicts
 
 # Create FastAPI app
 app = FastAPI(

@@ -1,7 +1,6 @@
 from sqlalchemy import Column, String, Integer, Float, Boolean, DateTime, ForeignKey, JSON, ARRAY, Text
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import relationship
-from geoalchemy2 import Geography
 import uuid
 from datetime import datetime
 
@@ -16,7 +15,8 @@ class City(Base):
     department = Column(String(100))
     country = Column(String(100), default="France")
     country_code = Column(String(2), default="FR")
-    center_point = Column(Geography(geometry_type='POINT', srid=4326))
+    latitude = Column(Float)
+    longitude = Column(Float)
     population = Column(Integer)
     local_subreddits = Column(ARRAY(Text))
     local_instagram_tags = Column(ARRAY(Text))
@@ -35,7 +35,8 @@ class Place(Base):
     name = Column(String(255), nullable=False)
     category = Column(String(50))
     subcategory = Column(String(100))
-    location = Column(Geography(geometry_type='POINT', srid=4326))
+    latitude = Column(Float)
+    longitude = Column(Float)
     address = Column(Text)
     arrondissement = Column(String(50))
     metro_station = Column(String(100))
