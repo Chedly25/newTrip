@@ -155,7 +155,8 @@ class PhotoUpload(Base):
     file_name = Column(String(255))
     file_size = Column(Integer)
     mime_type = Column(String(100))
-    upload_location = Column(Geography(geometry_type='POINT', srid=4326))
+    latitude = Column(Float)
+    longitude = Column(Float)
     ai_analysis_status = Column(String(50), default="pending")  # pending, processing, completed, failed
     created_at = Column(DateTime, default=datetime.utcnow)
     
@@ -249,7 +250,8 @@ class Event(Base):
     event_type = Column(String(100))  # festival, concert, exhibition, market, etc.
     start_date = Column(DateTime)
     end_date = Column(DateTime)
-    location = Column(Geography(geometry_type='POINT', srid=4326))
+    latitude = Column(Float)
+    longitude = Column(Float)
     venue_name = Column(String(255))
     venue_address = Column(Text)
     price_range = Column(String(50))
