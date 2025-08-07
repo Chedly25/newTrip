@@ -7,6 +7,12 @@
 
 A smart travel platform that discovers hidden gems in France using AI-powered analysis of local mentions, Reddit discussions, and authentic travel data.
 
+## 🚀 One-Click Deploy to Heroku
+
+[![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/Chedly25/newTrip)
+
+**Required:** You'll need an [Anthropic API key](https://console.anthropic.com/) to use Claude AI features.
+
 ## 🎯 Features
 
 - **AI-Powered Discovery**: Uses Claude AI to analyze and extract place information from text

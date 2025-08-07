@@ -8,14 +8,24 @@ from app.config import settings
 
 logger = logging.getLogger(__name__)
 
-# Redis client
-redis_client = redis.from_url(settings.REDIS_URL, decode_responses=True)
+# Redis client with error handling
+try:
+    redis_client = redis.from_url(settings.REDIS_URL, decode_responses=True)
+    # Test connection
+    redis_client.ping()
+except Exception as e:
+    logger.warning(f"Redis connection failed: {e}. Caching disabled.")
+    redis_client = None
 
 def cache_key_wrapper(key_prefix: str, timeout: int = 3600):
     """Decorator for caching function results"""
     def decorator(func: Callable) -> Callable:
         @functools.wraps(func)
         async def wrapper(*args, **kwargs):
+            # Skip caching if Redis is not available
+            if redis_client is None:
+                return await func(*args, **kwargs)
+            
             # Create cache key
             cache_key = f"{key_prefix}:{hash(str(args) + str(kwargs))}"
             

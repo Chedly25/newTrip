@@ -1,0 +1,75 @@
+{
+  "name": "Wanderlog AI - French Hidden Gems Discovery",
+  "description": "A smart travel platform that discovers hidden gems in France using Claude AI",
+  "repository": "https://github.com/Chedly25/newTrip",
+  "logo": "https://img.shields.io/badge/Wanderlog-AI-blue",
+  "keywords": [
+    "travel",
+    "france",
+    "ai",
+    "claude",
+    "fastapi",
+    "hidden-gems",
+    "recommendations"
+  ],
+  "stack": "heroku-22",
+  "buildpacks": [
+    {
+      "url": "heroku/python"
+    }
+  ],
+  "formation": {
+    "web": {
+      "quantity": 1,
+      "size": "basic"
+    }
+  },
+  "addons": [
+    {
+      "plan": "heroku-postgresql:essential-0",
+      "as": "DATABASE"
+    },
+    {
+      "plan": "heroku-redis:mini",
+      "as": "REDIS"
+    }
+  ],
+  "env": {
+    "ANTHROPIC_API_KEY": {
+      "description": "Your Anthropic Claude API key (required)",
+      "value": "",
+      "required": true
+    },
+    "SECRET_KEY": {
+      "description": "Secret key for JWT tokens",
+      "generator": "secret"
+    },
+    "ALGORITHM": {
+      "description": "JWT algorithm",
+      "value": "HS256"
+    },
+    "ACCESS_TOKEN_EXPIRE_MINUTES": {
+      "description": "JWT token expiration time in minutes",
+      "value": "30"
+    },
+    "ENVIRONMENT": {
+      "description": "Environment setting",
+      "value": "production"
+    },
+    "DEBUG": {
+      "description": "Debug mode",
+      "value": "False"
+    },
+    "REDDIT_CLIENT_ID": {
+      "description": "Reddit API client ID (optional for enhanced scraping)",
+      "required": false
+    },
+    "REDDIT_CLIENT_SECRET": {
+      "description": "Reddit API client secret (optional for enhanced scraping)",
+      "required": false
+    }
+  },
+  "scripts": {
+    "postdeploy": "cd backend && alembic upgrade head"
+  }
+}
