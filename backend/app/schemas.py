@@ -1,4 +1,4 @@
-from pydantic import BaseModel, EmailStr
+from pydantic import BaseModel, Field, field_validator
 from typing import Optional, List, Dict, Any
 from datetime import datetime
 import uuid
@@ -49,7 +49,7 @@ class PlaceWithScore(Place):
     gem_score: Optional[GemScore] = None
 
 class UserBase(BaseModel):
-    email: EmailStr
+    email: str = Field(..., pattern=r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$')
     full_name: Optional[str] = None
 
 class UserCreate(UserBase):
