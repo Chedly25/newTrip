@@ -91,27 +91,41 @@ export default function RootLayout({ children }: RootLayoutProps) {
         <meta name="color-scheme" content="light dark" />
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
       </head>
-      <body className="font-sans antialiased bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 min-h-screen">
+      <body>
         <Providers>
-          {/* Background Gradient Animation */}
-          <div className="fixed inset-0 overflow-hidden pointer-events-none">
-            <div className="absolute -top-1/2 -left-1/2 w-full h-full bg-gradient-to-br from-primary-100/20 via-secondary-100/20 to-accent-100/20 rotate-12 animate-float"></div>
-            <div className="absolute -bottom-1/2 -right-1/2 w-full h-full bg-gradient-to-tl from-accent-100/20 via-primary-100/20 to-secondary-100/20 -rotate-12 animate-float" style={{ animationDelay: '2s' }}></div>
+          {/* Background floating elements */}
+          <div style={{ position: 'fixed', inset: '0', overflow: 'hidden', pointerEvents: 'none', zIndex: 1 }}>
+            <div className="animate-float" style={{ 
+              position: 'absolute', 
+              top: '20%', 
+              left: '10%', 
+              width: '1rem', 
+              height: '1rem', 
+              background: 'linear-gradient(45deg, #3b82f6, #8b5cf6)', 
+              borderRadius: '50%', 
+              opacity: 0.3 
+            }}></div>
+            <div className="animate-float" style={{ 
+              position: 'absolute', 
+              top: '40%', 
+              right: '16%', 
+              width: '0.75rem', 
+              height: '0.75rem', 
+              background: 'linear-gradient(45deg, #f59e0b, #3b82f6)', 
+              borderRadius: '50%', 
+              opacity: 0.4,
+              animationDelay: '1s'
+            }}></div>
           </div>
           
           {/* Main Content */}
-          <div className="relative z-10">
+          <div style={{ position: 'relative', zIndex: 10 }}>
             <Navigation />
-            <main className="min-h-screen">
+            <main style={{ minHeight: '100vh' }}>
               {children}
             </main>
             <Footer />
           </div>
-          
-          {/* Floating Elements for Premium Feel */}
-          <div className="fixed top-20 left-10 w-4 h-4 bg-gradient-to-r from-primary-400 to-secondary-400 rounded-full opacity-30 animate-float pointer-events-none"></div>
-          <div className="fixed top-40 right-16 w-3 h-3 bg-gradient-to-r from-accent-400 to-primary-400 rounded-full opacity-40 animate-float pointer-events-none" style={{ animationDelay: '1s' }}></div>
-          <div className="fixed bottom-32 left-20 w-2 h-2 bg-gradient-to-r from-secondary-400 to-accent-400 rounded-full opacity-50 animate-float pointer-events-none" style={{ animationDelay: '3s' }}></div>
         </Providers>
       </body>
     </html>

@@ -50,48 +50,63 @@ app.include_router(food.router, prefix="/api/v1")
 app.include_router(safety.router, prefix="/api/v1")
 
 # Mount static files for frontend
-static_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "..", "frontend", "dist")
-if os.path.exists(static_dir):
+# Try multiple possible paths for the frontend build
+possible_paths = [
+    os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "..", "frontend", "dist"),
+    os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))), "frontend", "dist"),
+    "/app/frontend/dist",
+    "./frontend/dist",
+    "../frontend/dist"
+]
+
+static_dir = None
+for path in possible_paths:
+    if os.path.exists(path):
+        static_dir = path
+        logger.info(f"Found frontend build at: {path}")
+        break
+
+if static_dir and os.path.exists(os.path.join(static_dir, "index.html")):
+    # Mount static files
     app.mount("/static", StaticFiles(directory=static_dir), name="static")
     
     @app.get("/")
     async def serve_frontend():
+        """Serve the main frontend application"""
         index_file = os.path.join(static_dir, "index.html")
-        if os.path.exists(index_file):
-            return FileResponse(index_file)
-        return {
-            "message": "Wanderlog AI API",
-            "version": settings.VERSION,
-            "docs": "/api/docs"
-        }
+        return FileResponse(index_file)
     
-    # Catch-all route for SPA routing
+    # Catch-all route for SPA routing - this must be last
     @app.get("/{full_path:path}")
     async def serve_spa(full_path: str):
-        # Don't intercept API routes
-        if full_path.startswith("api/"):
-            return {
-                "message": "API endpoint not found",
-                "docs": "/api/docs"
-            }
+        """Handle SPA routing for frontend"""
+        # Don't intercept API routes, docs, or health checks
+        if (full_path.startswith("api/") or 
+            full_path.startswith("docs") or 
+            full_path.startswith("redoc") or 
+            full_path == "health"):
+            # Let FastAPI handle these routes normally
+            from fastapi import HTTPException
+            raise HTTPException(status_code=404, detail="Not found")
         
+        # Serve the frontend for all other routes
         index_file = os.path.join(static_dir, "index.html")
-        if os.path.exists(index_file):
-            return FileResponse(index_file)
+        return FileResponse(index_file)
         
-        return {
-            "message": "Wanderlog AI API",
-            "version": settings.VERSION,
-            "docs": "/api/docs"
-        }
+    logger.info("✅ Frontend successfully mounted and ready to serve!")
+    
 else:
+    logger.warning("⚠️  Frontend build not found. Make sure to run 'npm run build' in the frontend directory.")
+    
     @app.get("/")
     async def root():
         return {
-            "message": "Wanderlog AI API",
+            "message": "Wanderlog AI - Premium Travel Companion",
             "version": settings.VERSION,
+            "status": "Backend Ready",
             "docs": "/api/docs",
-            "frontend": "Not built yet - run 'npm run build' in frontend directory"
+            "frontend_status": "Building... Please wait a moment and refresh.",
+            "build_paths_checked": possible_paths
         }
 
 @app.get("/health")
