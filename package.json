@@ -1,0 +1,32 @@
+{
+  "name": "wanderlog-ai-fullstack",
+  "version": "1.0.0",
+  "description": "Premium AI-Powered Travel Companion - Full Stack Application",
+  "scripts": {
+    "build": "cd frontend && npm install && npm run build",
+    "start": "cd backend && python -m uvicorn app.main:app --host 0.0.0.0 --port $PORT",
+    "postinstall": "cd frontend && npm install"
+  },
+  "engines": {
+    "node": "18.x",
+    "npm": "9.x"
+  },
+  "dependencies": {
+    "serve": "^14.2.1"
+  },
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Chedly25/newTrip.git"
+  },
+  "keywords": [
+    "travel",
+    "ai",
+    "france",
+    "nextjs",
+    "fastapi",
+    "premium"
+  ],
+  "author": "Wanderlog AI Team",
+  "license": "MIT"
+}

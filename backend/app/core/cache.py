@@ -8,11 +8,23 @@ from app.config import settings
 
 logger = logging.getLogger(__name__)
 
-# Redis client with error handling
+# Redis client with error handling and SSL fix
 try:
-    redis_client = redis.from_url(settings.REDIS_URL, decode_responses=True)
+    # Configure Redis connection with SSL certificate verification disabled for Heroku
+    redis_url = settings.REDIS_URL
+    if redis_url.startswith('rediss://'):
+        # For SSL Redis connections (Heroku), disable certificate verification
+        redis_client = redis.from_url(
+            redis_url, 
+            decode_responses=True,
+            ssl_cert_reqs=None
+        )
+    else:
+        redis_client = redis.from_url(redis_url, decode_responses=True)
+    
     # Test connection
     redis_client.ping()
+    logger.info("Redis connected successfully")
 except Exception as e:
     logger.warning(f"Redis connection failed: {e}. Caching disabled.")
     redis_client = None
