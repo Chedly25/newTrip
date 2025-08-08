@@ -66,8 +66,14 @@ for path in possible_paths:
         break
 
 if static_dir and os.path.exists(os.path.join(static_dir, "index.html")):
-    # Mount static files
-    app.mount("/static", StaticFiles(directory=static_dir), name="static")
+    # Mount static assets (CSS, JS, images) under /_next and other static paths
+    app.mount("/_next", StaticFiles(directory=os.path.join(static_dir, "_next")), name="nextjs_assets")
+    
+    # Mount other static directories if they exist
+    for static_path in ["images", "icons"]:
+        full_static_path = os.path.join(static_dir, static_path)
+        if os.path.exists(full_static_path) and os.path.isdir(full_static_path):
+            app.mount(f"/{static_path}", StaticFiles(directory=full_static_path), name=f"static_{static_path}")
     
     @app.get("/")
     async def serve_frontend():
@@ -88,7 +94,12 @@ if static_dir and os.path.exists(os.path.join(static_dir, "index.html")):
             from fastapi import HTTPException
             raise HTTPException(status_code=404, detail="Not found")
         
-        # Serve the frontend for all other routes
+        # Check if this is a request for a static file
+        static_file_path = os.path.join(static_dir, full_path)
+        if os.path.isfile(static_file_path):
+            return FileResponse(static_file_path)
+        
+        # Serve the frontend for all other routes (SPA routing)
         index_file = os.path.join(static_dir, "index.html")
         return FileResponse(index_file)
         
