@@ -6,6 +6,17 @@ from datetime import datetime
 
 from app.database import Base
 
+# Try to import Geography, fallback to basic types if PostGIS not available
+try:
+    from geoalchemy2 import Geography
+    POSTGIS_AVAILABLE = True
+except ImportError:
+    POSTGIS_AVAILABLE = False
+    # Create a dummy Geography class for fallback
+    class Geography:
+        def __init__(self, *args, **kwargs):
+            pass
+
 class City(Base):
     __tablename__ = "cities"
     
@@ -15,8 +26,9 @@ class City(Base):
     department = Column(String(100))
     country = Column(String(100), default="France")
     country_code = Column(String(2), default="FR")
-    latitude = Column(Float)
-    longitude = Column(Float)
+    center_point = Column(Geography(geometry_type='POINT', srid=4326), nullable=True)
+    latitude = Column(Float)  # Fallback/additional field
+    longitude = Column(Float)  # Fallback/additional field
     population = Column(Integer)
     local_subreddits = Column(ARRAY(Text))
     local_instagram_tags = Column(ARRAY(Text))
@@ -35,8 +47,9 @@ class Place(Base):
     name = Column(String(255), nullable=False)
     category = Column(String(50))
     subcategory = Column(String(100))
-    latitude = Column(Float)
-    longitude = Column(Float)
+    location = Column(Geography(geometry_type='POINT', srid=4326), nullable=True)
+    latitude = Column(Float)  # Fallback/additional field
+    longitude = Column(Float)  # Fallback/additional field
     address = Column(Text)
     arrondissement = Column(String(50))
     metro_station = Column(String(100))
@@ -155,8 +168,9 @@ class PhotoUpload(Base):
     file_name = Column(String(255))
     file_size = Column(Integer)
     mime_type = Column(String(100))
-    latitude = Column(Float)
-    longitude = Column(Float)
+    upload_location = Column(Geography(geometry_type='POINT', srid=4326), nullable=True)
+    latitude = Column(Float)  # Fallback/additional field
+    longitude = Column(Float)  # Fallback/additional field
     ai_analysis_status = Column(String(50), default="pending")  # pending, processing, completed, failed
     created_at = Column(DateTime, default=datetime.utcnow)
     
@@ -250,8 +264,9 @@ class Event(Base):
     event_type = Column(String(100))  # festival, concert, exhibition, market, etc.
     start_date = Column(DateTime)
     end_date = Column(DateTime)
-    latitude = Column(Float)
-    longitude = Column(Float)
+    location = Column(Geography(geometry_type='POINT', srid=4326), nullable=True)
+    latitude = Column(Float)  # Fallback/additional field
+    longitude = Column(Float)  # Fallback/additional field
     venue_name = Column(String(255))
     venue_address = Column(Text)
     price_range = Column(String(50))
