@@ -53,9 +53,11 @@ app.include_router(safety.router, prefix="/api/v1")
 # Heroku working directory is /app (repository root)
 possible_paths = [
     "/app/frontend/dist",           # Absolute path on Heroku
-    "frontend/dist",                # Relative from /app working directory
+    "frontend/dist",                # Relative from /app working directory  
     "./frontend/dist",              # Same as above with explicit ./
+    "../frontend/dist",             # From backend/ directory
     os.path.join(os.getcwd(), "frontend", "dist"),  # Dynamic based on current working directory
+    os.path.join(os.path.dirname(os.getcwd()), "frontend", "dist"),  # Parent directory
 ]
 
 static_dir = None
