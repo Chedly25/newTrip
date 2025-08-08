@@ -50,13 +50,12 @@ app.include_router(food.router, prefix="/api/v1")
 app.include_router(safety.router, prefix="/api/v1")
 
 # Mount static files for frontend
-# Try multiple possible paths for the frontend build
+# Heroku working directory is /app (repository root)
 possible_paths = [
-    os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "..", "frontend", "dist"),
-    os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))), "frontend", "dist"),
-    "/app/frontend/dist",
-    "./frontend/dist",
-    "../frontend/dist"
+    "/app/frontend/dist",           # Absolute path on Heroku
+    "frontend/dist",                # Relative from /app working directory
+    "./frontend/dist",              # Same as above with explicit ./
+    os.path.join(os.getcwd(), "frontend", "dist"),  # Dynamic based on current working directory
 ]
 
 static_dir = None
