@@ -73,6 +73,6 @@
     }
   },
   "scripts": {
-    "postdeploy": "./build_frontend.sh && cd backend && python scripts/init_postgis.py && alembic upgrade head"
+    "postdeploy": "bash build_frontend.sh && cd backend && python scripts/init_postgis.py && alembic upgrade head"
   }
 }
